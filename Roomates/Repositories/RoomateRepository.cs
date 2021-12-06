@@ -46,5 +46,39 @@ namespace Roomates.Repositories
                 }
             }
         }
+
+        public List<Roommate> GetAll()
+        {
+            using(SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using(SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Roommate";
+
+                    List<Roommate> roommates = new List<Roommate>();
+
+                    using(SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                           Roommate roomate = new Roommate
+                           {
+                               Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                               FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                               LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                           };
+
+                        roommates.Add(roomate);
+                        }
+
+                        return roommates;
+                    }
+
+                    
+                }
+            }
+        }
     }
 }
