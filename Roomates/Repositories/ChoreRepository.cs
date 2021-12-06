@@ -1,0 +1,104 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+using Roomates.Models;
+using System.Collections.Generic;
+using Roommates.Repositories;
+
+namespace Roomates.Repositories
+{
+    public class ChoreRepository : BaseRepository
+    {
+        public ChoreRepository(string connectionString) : base(connectionString) { }
+
+        public List<Chore> GetAll()
+        {
+            using(SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using(SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT Id, Name FROM Chore";
+
+                    List<Chore> chores = new List<Chore>();
+
+                    using(SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int idColumnPos = reader.GetOrdinal("Id");
+
+                            int idValue = reader.GetInt32(idColumnPos);
+
+                            int nameColumnPos = reader.GetOrdinal("Name");
+
+                            string nameValue = reader.GetString(nameColumnPos);
+
+
+                            Chore room = new Chore()
+                            {
+                                Id = idValue,
+                                Name = nameValue,
+                            };
+
+                            chores.Add(room);
+                        }
+                    return chores;
+                    }
+                }
+            }
+        }
+
+        public Chore GetById(int id)
+        {
+            using(SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using(SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT Name FROM Chore WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id",id);
+
+                    Chore chore = null;
+
+                    using(SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            chore = new Chore
+                            {
+                                Id = id,
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                            };
+                        }
+                    }
+                    return chore;
+                }
+            }
+        }
+
+        public void Insert(Chore chore)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO Chore (Name) 
+                                         OUTPUT INSERTED.Id 
+                                         VALUES (@name)";
+                    cmd.Parameters.AddWithValue("@name", chore.Name);
+                    int id = (int)cmd.ExecuteScalar();
+
+                    chore.Id = id;
+                }
+            }
+        }
+    }
+}
