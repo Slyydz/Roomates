@@ -18,6 +18,32 @@ namespace Roommates
             ChoreRepository choreRepo = new ChoreRepository(CONNECTION_STRING);
             RoomateRepository roomateRepo = new RoomateRepository(CONNECTION_STRING);
 
+            DateTime date = new DateTime(2015, 12, 25);
+
+            Roommate sprintRoommate1 = new Roommate("Wade","Watts", 15, date, 3);
+            Roommate sprintRoommate2 = new Roommate
+            {
+        
+                    FirstName = "Peter",
+                    LastName = "Parker",
+                    RentPortion = 20,
+                    MovedInDate = date,
+                    Room = new Room()
+                    {
+                        Id = 4
+
+                    }
+            };
+
+            Console.WriteLine($"First Roommate: {sprintRoommate1.FirstName} {sprintRoommate1.LastName}");
+            Console.WriteLine($"Second Roommate: {sprintRoommate2.FirstName} {sprintRoommate2.LastName}");
+
+            Console.WriteLine();
+
+            Console.WriteLine($"First Roommate Details: {sprintRoommate1.Details}");
+            Console.WriteLine($"Second Roommate Details: {sprintRoommate2.Details}");
+            Console.ReadLine();
+
             bool runProgram = true;
 
             while (runProgram)
