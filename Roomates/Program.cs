@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Roommates.Repositories;
 using Roomates.Models;
 using Roomates.Repositories;
+using Microsoft.Data.SqlClient;
+using System.Linq;
 
 namespace Roommates
 {
@@ -173,6 +175,35 @@ namespace Roommates
                         Console.ReadLine();
 
                         break;
+                    case "Update a room":
+                        List<Room> roomList = roomRepo.GetAll();
+
+                        foreach(Room r in roomList)
+                        {
+                            Console.WriteLine($"{r.Name} has an Id of {r.Id} and a max occupancy of {r.MaxOccupancy}");
+                        }
+
+                        Console.Write("Select a room to update: ");
+                        int updateChoice = int.Parse(Console.ReadLine());
+
+                        Console.WriteLine();
+                        Room selectedRoom = roomList.FirstOrDefault(r => r.Id == updateChoice);
+
+                        Console.Write("Enter a new name: ");
+                        selectedRoom.Name = Console.ReadLine();
+
+                        Console.WriteLine();
+
+                        Console.Write("Enter a new maximum occupancy: ");
+                        selectedRoom.MaxOccupancy = int.Parse(Console.ReadLine());
+
+                        roomRepo.Update(selectedRoom);
+
+                        Console.WriteLine("Room updated!");
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadLine();
+
+                        break;
                     case ("Exit"):
                         runProgram = false;
                         break;
@@ -196,6 +227,7 @@ namespace Roommates
                 "Select a roommate",
                 "Show unassigned chores",
                 "Assign chore to roommate",
+                "Update a Room",
                 "Exit"
             };
 
