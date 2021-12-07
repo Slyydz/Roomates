@@ -175,6 +175,40 @@ namespace Roommates
                         Console.ReadLine();
 
                         break;
+                    case "Reassign chore":
+                        List<Chore> getAssigned = choreRepo.getAssignedChores();
+
+
+                        foreach(Chore c in getAssigned)
+                        {
+                            Console.WriteLine($"{c.roommateChoreId} - {c.Name} is assigned");
+                        }
+
+                        Console.Write("Please select a chore from the list: ");
+                        int roommateChoreId = int.Parse(Console.ReadLine());
+
+                        Roommate assignedRoommate = roomateRepo.getAssignedRoommate(roommateChoreId);
+
+                        Console.WriteLine($"This chore is currently assigned to {assignedRoommate.FirstName} {assignedRoommate.LastName}");
+
+                        List<Roommate> roommateList = roomateRepo.GetAll();
+
+                        foreach(Roommate r in roommateList)
+                        {
+                            Console.WriteLine($"{r.Id} - {r.FirstName} {r.LastName}");
+                        }
+
+                        Console.Write("Which roommate would you like to reassign this chore too?");
+
+                        int reassignRoommateId = int.Parse(Console.ReadLine());
+
+                        choreRepo.ReassignChore(roommateChoreId, reassignRoommateId);
+
+                        Console.WriteLine("Chore updated!");
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadLine();
+
+                        break;
                     case "Update a room":
                         List<Room> roomList = roomRepo.GetAll();
 
@@ -297,6 +331,7 @@ namespace Roommates
                 "Delete a Room",
                 "Update a chore",
                 "Delete a chore",
+                "Reassign chore",
                 "Exit"
             };
 

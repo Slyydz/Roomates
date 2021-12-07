@@ -151,6 +151,57 @@ namespace Roomates.Repositories
             }
         }
 
+        public List<Chore> getAssignedChores()
+        {
+            using(SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using(SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT Chore.Name, RoommateChore.Id, Chore.Id as ChoreId FROM Chore JOIN RoommateChore on RoommateChore.ChoreId = Chore.Id";
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        List<Chore> assignedChores = new List<Chore>();
+
+                        while (reader.Read())
+                        {
+                            Chore assignedChore = new Chore
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("ChoreId")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                roommateChoreId = reader.GetInt32(reader.GetOrdinal("Id"))
+                            };
+
+                            assignedChores.Add(assignedChore);
+                        }
+
+                        return assignedChores;
+                    }
+                }
+            }
+        }
+
+        public void ReassignChore(int id, int roommateId)
+        {
+            using(SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using(SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE RoommateChore 
+                                            SET RoommateId = @roommateId
+                                            WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@roommateId", roommateId);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         public void Update(Chore chore)
         {
                 using (SqlConnection conn = Connection)
