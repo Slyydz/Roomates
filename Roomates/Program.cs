@@ -224,6 +224,52 @@ namespace Roommates
                         Console.ReadLine();
 
                         break;
+                    case "Update a chore":
+                        List<Chore> choreList = choreRepo.GetAll();
+
+                        foreach (Chore r in choreList)
+                        {
+                            Console.WriteLine($"{r.Name} has an Id of {r.Id}");
+                        }
+
+                        Console.Write("Select a chore to update: ");
+                        int choreUpdateChoice = int.Parse(Console.ReadLine());
+
+                        Console.WriteLine();
+                        Chore selectedChore = choreList.FirstOrDefault(r => r.Id == choreUpdateChoice);
+
+                        Console.Write("Enter a new name: ");
+                        selectedChore.Name = Console.ReadLine();
+
+                        Console.WriteLine();
+
+                        choreRepo.Update(selectedChore);
+
+                        Console.WriteLine("Room updated!");
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadLine();
+
+                        break;
+                    case "Delete a chore":
+                        List<Chore> choreListDel = choreRepo.GetAll();
+
+                        foreach (Chore r in choreListDel)
+                        {
+                            Console.WriteLine($"{r.Name} has an Id of {r.Id}");
+                        }
+
+                        Console.Write("Which chore do you want to delete? ");
+                        int choreDelId = int.Parse(Console.ReadLine());
+
+                        choreRepo.Delete(choreDelId);
+
+                        Console.WriteLine();
+                        Console.WriteLine("Chore succesfully deleted");
+                        Console.WriteLine();
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadLine();
+
+                        break;
                     case ("Exit"):
                         runProgram = false;
                         break;
@@ -249,6 +295,8 @@ namespace Roommates
                 "Assign chore to roommate",
                 "Update a Room",
                 "Delete a Room",
+                "Update a chore",
+                "Delete a chore",
                 "Exit"
             };
 
