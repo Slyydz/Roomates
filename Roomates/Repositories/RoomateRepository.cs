@@ -67,7 +67,7 @@ namespace Roomates.Repositories
                            {
                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
-                               LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                               LastName = reader.GetString(reader.GetOrdinal("LastName"))
                            };
 
                         roommates.Add(roomate);
@@ -77,6 +77,38 @@ namespace Roomates.Repositories
                     }
 
                     
+                }
+            }
+        }
+
+        public Roommate getAssignedRoommate(int choreId)
+        {
+            using(SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using(SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT Roommate.FirstName, Roommate.LastName, Roommate.Id FROM Roommate JOIN RoommateChore on RoommateChore.RoommateId = Roommate.Id WHERE RoommateChore.ChoreId = @choreId";
+
+                    cmd.Parameters.AddWithValue("@choreId", choreId);
+
+                    using(SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Roommate assignedRoommate = null;
+
+                        while (reader.Read())
+                        {
+                            assignedRoommate = new Roommate
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            };
+                        }
+
+                        return assignedRoommate;
+                    }
                 }
             }
         }
